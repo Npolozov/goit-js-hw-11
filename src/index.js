@@ -5,12 +5,6 @@ import { createMarkup } from './js/createMarkup';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-let lightbox = new SimpleLightbox('.photo-card a', {
-  captions: true,
-  captionsData: 'alt',
-  captionDelay: 250,
-});
-
 const unsplash = new UnsplashAPI();
 
 const handleSubmit = event => {
@@ -44,6 +38,12 @@ const handleSubmit = event => {
 
       unsplash.calculateTotalPages(totalHits);
 
+      let lightbox = new SimpleLightbox('.photo-card a', {
+        captions: true,
+        captionsData: 'alt',
+        captionDelay: 250,
+      });
+
       Notify.success(`Hooray! We found ${totalHits} images.`);
 
       if (unsplash.isShowLoadMore) {
@@ -68,6 +68,7 @@ const loadMore = event => {
     .then(({ hits }) => {
       const markup = createMarkup(hits);
       refs.galleryReg.insertAdjacentHTML('beforeend', markup);
+      lightbox.refresh();
     })
     .catch(error => {
       Notify.failure(error.message);
