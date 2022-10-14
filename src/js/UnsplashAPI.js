@@ -28,6 +28,10 @@ export class UnsplashAPI {
     return this.#searchQuery;
   }
 
+  resetPage() {
+    this.#page = 1;
+  }
+
   incrementPage() {
     this.#page += 1;
   }

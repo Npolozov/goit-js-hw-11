@@ -1,6 +1,3 @@
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
-
 export function createMarkup(photos) {
   return photos
     .map(
@@ -34,11 +31,3 @@ export function createMarkup(photos) {
     )
     .join('');
 }
-
-new SimpleLightbox('.photo-card a', {
-  captionType: 'attr',
-  animationSpeed: 250,
-  captionsData: 'alt',
-  fadeSpeed: 250,
-  captionDelay: 250,
-});

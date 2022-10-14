@@ -2,10 +2,16 @@ import { refs } from './js/refs';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { UnsplashAPI } from './js/UnsplashAPI';
 import { createMarkup } from './js/createMarkup';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
+let lightbox = new SimpleLightbox('.photo-card a', {
+  captions: true,
+  captionsData: 'alt',
+  captionDelay: 250,
+});
 
 const unsplash = new UnsplashAPI();
-
-console.log(unsplash);
 
 const handleSubmit = event => {
   event.preventDefault();
@@ -21,19 +27,33 @@ const handleSubmit = event => {
   }
 
   unsplash.searchQuery = query;
+  clearPage();
 
-  unsplash.getPhotos().then(({ hits, totalHits }) => {
-    const markup = createMarkup(hits);
-    refs.galleryReg.insertAdjacentHTML('beforeend', markup);
+  unsplash
+    .getPhotos()
+    .then(({ hits, totalHits }) => {
+      if (hits.length === 0) {
+        Notify.info(
+          'Sorry, there are no images matching your search query. Please try again.'
+        );
+        return;
+      }
 
-    unsplash.calculateTotalPages(totalHits);
+      const markup = createMarkup(hits);
+      refs.galleryReg.insertAdjacentHTML('beforeend', markup);
 
-    Notify.success(`Ми знайшли ${totalHits} зображень по запиту ${query}`);
+      unsplash.calculateTotalPages(totalHits);
 
-    if (unsplash.isShowLoadMore) {
-      refs.btnLoadMore.classList.remove('is-hidden');
-    }
-  });
+      Notify.success(`Hooray! We found ${totalHits} images.`);
+
+      if (unsplash.isShowLoadMore) {
+        refs.btnLoadMore.classList.remove('is-hidden');
+      }
+    })
+    .catch(error => {
+      Notify.failure(error.message);
+      clearPage();
+    });
 };
 
 const loadMore = event => {
@@ -43,11 +63,23 @@ const loadMore = event => {
     refs.btnLoadMore.classList.add('is-hidden');
   }
 
-  unsplash.getPhotos().then(({ hits }) => {
-    const markup = createMarkup(hits);
-    refs.galleryReg.insertAdjacentHTML('beforeend', markup);
-  });
+  unsplash
+    .getPhotos()
+    .then(({ hits }) => {
+      const markup = createMarkup(hits);
+      refs.galleryReg.insertAdjacentHTML('beforeend', markup);
+    })
+    .catch(error => {
+      Notify.failure(error.message);
+      clearPage();
+    });
 };
+
+function clearPage() {
+  unsplash.resetPage();
+  refs.galleryReg.innerHTML = '';
+  refs.btnLoadMore.classList.add('is-hidden');
+}
 
 refs.form.addEventListener('submit', handleSubmit);
 refs.btnLoadMore.addEventListener('click', loadMore);
