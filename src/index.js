@@ -68,7 +68,6 @@ const loadMore = event => {
     .then(({ hits }) => {
       const markup = createMarkup(hits);
       refs.galleryReg.insertAdjacentHTML('beforeend', markup);
-      lightbox.refresh();
     })
     .catch(error => {
       Notify.failure(error.message);
