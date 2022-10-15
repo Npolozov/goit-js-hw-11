@@ -1,23 +1,25 @@
+import axios from 'axios';
+const URL = 'https://pixabay.com/api';
+const API_KEY = '30576193-c13648781b6f89bf6b7ef27da';
 export class UnsplashAPI {
   #page = 1;
   #searchQuery = '';
   #totalPages = 0;
   #perPage = 40;
+  #params = {
+    image_type: 'photo',
+    orientation: 'horizontal',
+    safesearch: true,
+  };
 
-  getPhotos() {
-    const url = `https://pixabay.com/api/?key=30576193-c13648781b6f89bf6b7ef27da&q=${
-      this.#searchQuery
-    }&page=${
+  async getPhotos() {
+    const url = `${URL}/?key=${API_KEY}&q=${this.#searchQuery}&page=${
       this.#page
-    }&image_type=photo&orientation=horizontal&safesearch=true&per_page=${
-      this.#perPage
-    }`;
-    return fetch(url).then(response => {
-      if (!response.ok) {
-        throw new Error(response.status);
-      }
-      return response.json();
-    });
+    }&per_page=${this.#perPage}`;
+
+    const { data } = await axios.get(url, this.#params);
+
+    return data;
   }
 
   set searchQuery(newQuery) {
