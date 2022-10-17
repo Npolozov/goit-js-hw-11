@@ -13,12 +13,6 @@ let lightbox = new SimpleLightbox('.photo-card a', {
   captionDelay: 250,
 });
 
-const options = {
-  root: null,
-  rootMargin: '100px',
-  threshold: 1.0,
-};
-
 const handleSubmit = async event => {
   event.preventDefault();
 
@@ -53,11 +47,11 @@ const handleSubmit = async event => {
     Notify.success(`Hooray! We found ${totalHits} images.`);
 
     if (unsplash.isShowLoadMore) {
-      // refs.btnLoadMore.classList.remove('is-hidden');
+      refs.btnLoadMore.classList.remove('is-hidden');
 
-      const turget = document.querySelector('.photo-card:last-child');
+      // const turget = document.querySelector('.photo-card:last-child');
 
-      io.observe(turget);
+      // io.observe(turget);
     }
   } catch (error) {
     Notify.failure(error.message);
@@ -116,36 +110,50 @@ const callback = function (entries, observer) {
   });
 };
 
+const options = {
+  root: null,
+  rootMargin: '100px',
+  threshold: 1.0,
+};
+
 const io = new IntersectionObserver(callback, options);
 
-// const loadMore = async event => {
-//   unsplash.incrementPage();
+const loadMore = async event => {
+  unsplash.incrementPage();
 
-//   if (!unsplash.isShowLoadMore) {
-//     refs.btnLoadMore.classList.add('is-hidden');
-//   }
-//   try {
-//     const { hits } = await unsplash.getPhotos();
-//     const markup = createMarkup(hits);
-//     refs.galleryReg.insertAdjacentHTML('beforeend', markup);
-//     lightbox.refresh();
-//   } catch (error) {
-//     Notify.failure(error.message);
-//     clearPage();
-//   }
+  if (!unsplash.isShowLoadMore) {
+    refs.btnLoadMore.classList.add('is-hidden');
+  }
+  try {
+    const { hits } = await unsplash.getPhotos();
+    const markup = createMarkup(hits);
+    refs.galleryReg.insertAdjacentHTML('beforeend', markup);
+    lightbox.refresh();
+    const { height: cardHeight } = document
+      .querySelector('.photo-card ')
+      .firstElementChild.getBoundingClientRect();
 
-//   // unsplash
-//   //   .getPhotos()
-//   //   .then(({ hits }) => {
-//   //     const markup = createMarkup(hits);
-//   //     refs.galleryReg.insertAdjacentHTML('beforeend', markup);
-//   //     lightbox.refresh();
-//   //   })
-//   //   .catch(error => {
-//   //     Notify.failure(error.message);
-//   //     clearPage();
-//   //   });
-// };
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
+    });
+  } catch (error) {
+    Notify.failure(error.message);
+    clearPage();
+  }
+
+  // unsplash
+  //   .getPhotos()
+  //   .then(({ hits }) => {
+  //     const markup = createMarkup(hits);
+  //     refs.galleryReg.insertAdjacentHTML('beforeend', markup);
+  //     lightbox.refresh();
+  //   })
+  //   .catch(error => {
+  //     Notify.failure(error.message);
+  //     clearPage();
+  //   });
+};
 
 function clearPage() {
   unsplash.resetPage();
@@ -154,4 +162,4 @@ function clearPage() {
 }
 
 refs.form.addEventListener('submit', handleSubmit);
-// refs.btnLoadMore.addEventListener('click', loadMore);
+refs.btnLoadMore.addEventListener('click', loadMore);
