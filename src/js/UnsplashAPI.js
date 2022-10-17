@@ -5,7 +5,7 @@ export class UnsplashAPI {
   #page = 1;
   #searchQuery = '';
   #totalPages = 0;
-  #perPage = 10;
+  #perPage = 40;
   #params = {
     image_type: 'photo',
     orientation: 'horizontal',

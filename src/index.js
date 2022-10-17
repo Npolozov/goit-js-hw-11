@@ -48,10 +48,6 @@ const handleSubmit = async event => {
 
     if (unsplash.isShowLoadMore) {
       refs.btnLoadMore.classList.remove('is-hidden');
-
-      // const turget = document.querySelector('.photo-card:last-child');
-
-      // io.observe(turget);
     }
   } catch (error) {
     Notify.failure(error.message);
@@ -86,37 +82,6 @@ const handleSubmit = async event => {
   //     clearPage();
   //   });
 };
-
-const callback = function (entries, observer) {
-  entries.forEach(async entry => {
-    if (entry.isIntersecting) {
-      unsplash.incrementPage();
-      io.unobserve(entry.target);
-
-      try {
-        const { hits } = await unsplash.getPhotos();
-        const markup = createMarkup(hits);
-        refs.galleryReg.insertAdjacentHTML('beforeend', markup);
-        lightbox.refresh();
-        if (unsplash.isShowLoadMore) {
-          const turget = document.querySelector('.photo-card:last-child');
-          io.observe(turget);
-        }
-      } catch (error) {
-        Notify.failure(error.message);
-        clearPage();
-      }
-    }
-  });
-};
-
-const options = {
-  root: null,
-  rootMargin: '100px',
-  threshold: 1.0,
-};
-
-const io = new IntersectionObserver(callback, options);
 
 const loadMore = async event => {
   unsplash.incrementPage();
