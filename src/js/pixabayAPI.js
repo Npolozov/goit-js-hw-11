@@ -1,7 +1,7 @@
 import axios from 'axios';
 const URL = 'https://pixabay.com/api';
 const API_KEY = '30576193-c13648781b6f89bf6b7ef27da';
-export class UnsplashAPI {
+export class pixabayAPI {
   #page = 1;
   #searchQuery = '';
   #totalPages = 0;

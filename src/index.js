@@ -1,11 +1,11 @@
 import { refs } from './js/refs';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import { UnsplashAPI } from './js/UnsplashAPI';
+import { pixabayAPI } from './js/pixabayAPI';
 import { createMarkup } from './js/createMarkup';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-const unsplash = new UnsplashAPI();
+const pixabay = new pixabayAPI();
 
 let lightbox = new SimpleLightbox('.photo-card a', {
   captions: true,
@@ -26,11 +26,11 @@ const handleSubmit = async event => {
     return;
   }
 
-  unsplash.searchQuery = query;
+  pixabay.searchQuery = query;
   clearPage();
 
   try {
-    const { hits, totalHits } = await unsplash.getPhotos();
+    const { hits, totalHits } = await pixabay.getPhotos();
     if (hits.length === 0) {
       Notify.info(
         'Sorry, there are no images matching your search query. Please try again.'
@@ -42,11 +42,11 @@ const handleSubmit = async event => {
 
     lightbox.refresh();
 
-    unsplash.calculateTotalPages(totalHits);
+    pixabay.calculateTotalPages(totalHits);
 
     Notify.success(`Hooray! We found ${totalHits} images.`);
 
-    if (unsplash.isShowLoadMore) {
+    if (pixabay.isShowLoadMore) {
       refs.btnLoadMore.classList.remove('is-hidden');
     }
   } catch (error) {
@@ -84,13 +84,16 @@ const handleSubmit = async event => {
 };
 
 const loadMore = async event => {
-  unsplash.incrementPage();
+  pixabay.incrementPage();
 
-  if (!unsplash.isShowLoadMore) {
+  if (!pixabay.isShowLoadMore) {
     refs.btnLoadMore.classList.add('is-hidden');
+    Notify.info(
+      'Were sorry, but youve reached the end of search results.'
+    );
   }
   try {
-    const { hits } = await unsplash.getPhotos();
+    const { hits } = await pixabay.getPhotos();
     const markup = createMarkup(hits);
     refs.galleryReg.insertAdjacentHTML('beforeend', markup);
     lightbox.refresh();
@@ -121,7 +124,7 @@ const loadMore = async event => {
 };
 
 function clearPage() {
-  unsplash.resetPage();
+  pixabay.resetPage();
   refs.galleryReg.innerHTML = '';
   refs.btnLoadMore.classList.add('is-hidden');
 }
