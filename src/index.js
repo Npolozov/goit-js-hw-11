@@ -43,6 +43,7 @@ const handleSubmit = async event => {
     lightbox.refresh();
 
     pixabay.calculateTotalPages(totalHits);
+    console.log(pixabay)
 
     Notify.success(`Hooray! We found ${totalHits} images.`);
 
