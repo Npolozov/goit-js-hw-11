@@ -7,9 +7,11 @@ export class pixabayAPI {
   #totalPages = 0;
   #perPage = 40;
   #params = {
-    image_type: 'photo',
-    orientation: 'horizontal',
-    safesearch: true,
+    params: {
+      image_type: 'photo',
+      orientation: 'horizontal',
+      safesearch: true,
+    },
   };
 
   async getPhotos() {
@@ -40,6 +42,7 @@ export class pixabayAPI {
 
   calculateTotalPages(totalHits) {
     this.#totalPages = Math.ceil(totalHits / this.#perPage);
+    console.log(this.#totalPages);
   }
 
   get isShowLoadMore() {

@@ -43,7 +43,7 @@ const handleSubmit = async event => {
     lightbox.refresh();
 
     pixabay.calculateTotalPages(totalHits);
-    console.log(pixabay)
+    console.log(pixabay);
 
     Notify.success(`Hooray! We found ${totalHits} images.`);
 
@@ -87,11 +87,11 @@ const handleSubmit = async event => {
 const loadMore = async event => {
   pixabay.incrementPage();
 
+  console.log(pixabay);
+
   if (!pixabay.isShowLoadMore) {
     refs.btnLoadMore.classList.add('is-hidden');
-    Notify.info(
-      'Were sorry, but youve reached the end of search results.'
-    );
+    Notify.info('Were sorry, but youve reached the end of search results.');
   }
   try {
     const { hits } = await pixabay.getPhotos();
